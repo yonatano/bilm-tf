@@ -69,6 +69,16 @@ class LanguageModel(object):
 
         self.sample_softmax = options.get('sample_softmax', True)
 
+        # DRO
+        self.eta = tf.get_variable('eta',
+                                   initializer=tf.constant([0.0]),
+                                   dtype=tf.float32,
+                                   trainable=True)
+        self.alpha = tf.get_variable('alpha',
+                                     initializer=tf.constant([self.options.alpha]),
+                                     dtype=tf.float32,
+                                     trainable=False)
+
         self._build()
 
     def _build_word_embeddings(self):
@@ -514,10 +524,15 @@ class LanguageModel(object):
                     # NOTE: tf.nn.sparse_softmax_cross_entropy_with_logits
                     #   expects unnormalized output since it performs the
                     #   softmax internally
+
                     losses = tf.nn.sparse_softmax_cross_entropy_with_logits(
                         logits=output_scores,
                         labels=tf.squeeze(next_token_id_flat, squeeze_dims=[1])
                     )
+
+                    # DRO
+                    residual = losses - self.eta
+                    output_scores_ = (tf.nn.relu(residual) / self.alpha + self.eta)
 
             self.individual_losses.append(tf.reduce_mean(losses))
 

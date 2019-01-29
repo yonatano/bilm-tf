@@ -52,6 +52,9 @@ def main(args):
      'n_tokens_vocab': vocab.size,
      'unroll_steps': 20,
      'n_negative_samples_batch': 8192,
+
+     'dro': args.dro,
+     'alpha': args.dro_alpha,
     }
 
     prefix = args.train_prefix
@@ -68,6 +71,10 @@ if __name__ == '__main__':
     parser.add_argument('--save_dir', help='Location of checkpoint files')
     parser.add_argument('--vocab_file', help='Vocabulary file')
     parser.add_argument('--train_prefix', help='Prefix for train files')
+
+    # DRO
+    parser.add_argument('--dro', help='Use DRO for training.', action='store_true')
+    parser.add_argument('--dro-alpha', help='alpha value for DRO objective.', type=float)
 
     args = parser.parse_args()
     main(args)
