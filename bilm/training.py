@@ -532,7 +532,7 @@ class LanguageModel(object):
 
                     # DRO
                     residual = losses - self.eta
-                    output_scores_ = (tf.nn.relu(residual) / self.alpha + self.eta)
+                    losses = (tf.nn.relu(residual) / self.alpha + self.eta)
 
             self.individual_losses.append(tf.reduce_mean(losses))
 
