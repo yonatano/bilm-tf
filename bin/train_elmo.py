@@ -54,7 +54,7 @@ def main(args):
      'n_negative_samples_batch': 8192,
 
      'dro': args.dro,
-     'alpha': args.dro_alpha,
+     'dro_alpha': args.dro_alpha,
     }
 
     prefix = args.train_prefix

@@ -70,14 +70,15 @@ class LanguageModel(object):
         self.sample_softmax = options.get('sample_softmax', True)
 
         # DRO
-        self.eta = tf.get_variable('eta',
-                                   initializer=tf.constant([0.0]),
-                                   dtype=tf.float32,
-                                   trainable=True)
-        self.alpha = tf.get_variable('alpha',
-                                     initializer=tf.constant([self.options.alpha]),
-                                     dtype=tf.float32,
-                                     trainable=False)
+        if options.get('dro', False):
+            self.eta = tf.get_variable('eta',
+                                       initializer=tf.constant([0.0]),
+                                       dtype=tf.float32,
+                                       trainable=True)
+            self.alpha = tf.get_variable('alpha',
+                                         initializer=tf.constant([options.get('dro_alpha', 1.0)]),
+                                         dtype=tf.float32,
+                                         trainable=False)
 
         self._build()
 
@@ -531,7 +532,7 @@ class LanguageModel(object):
                     )
 
                     # DRO
-                    if self.options.dro:
+                    if self.options.get('dro', False):
                         residual = losses - self.eta
                         losses = (tf.nn.relu(residual) / self.alpha + self.eta)
 
