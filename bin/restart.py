@@ -38,6 +38,10 @@ def main(args):
     if args.batch_size > 0:
         options['batch_size'] = args.batch_size
 
+    # DRO
+    options['dro'] = args.dro
+    options['dro_alpha'] = args.dro_alpha
+
     train(options, data, args.n_gpus, tf_save_dir, tf_log_dir,
           restart_ckpt_file=ckpt_file)
 
@@ -52,6 +56,10 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default=0)
     parser.add_argument('--n_train_tokens', type=int, default=0)
     parser.add_argument('--n_epochs', type=int, default=0)
+
+    # DRO
+    parser.add_argument('--dro', help='Use DRO for training.', action='store_true')
+    parser.add_argument('--dro-alpha', help='alpha value for DRO objective.', type=float)
 
     args = parser.parse_args()
     main(args)
